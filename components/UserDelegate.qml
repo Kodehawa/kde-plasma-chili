@@ -37,13 +37,13 @@ Item {
     property bool constrainText: true
     signal clicked()
 
-    property real faceSize: config.AvatarPixelSize ? config.AvatarPixelSize : Math.min(width, height - usernameDelegate.height - units.smallSpacing)
+    property real faceSize: config.AvatarPixelSize ? config.AvatarPixelSize : Math.min(width, height - usernameDelegate.height - PlasmaCore.Units.smallSpacing)
 
     opacity: isCurrent ? 1.0 : 0.3
 
     Behavior on opacity {
         OpacityAnimator {
-            duration: units.longDuration
+            duration: PlasmaCore.Units.longDuration
         }
     }
 
@@ -95,7 +95,7 @@ Item {
             source: iconSource
             visible: (face.status == Image.Error || face.status == Image.Null)
             anchors.fill: parent
-            anchors.margins: units.gridUnit * 0.5 // because mockup says so...
+            anchors.margins: PlasmaCore.Units.gridUnit * 0.5 // because mockup says so...
             colorGroup: PlasmaCore.ColorScope.colorGroup
         }
     }

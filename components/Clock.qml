@@ -24,14 +24,13 @@ import org.kde.plasma.core 2.0
 import org.kde.plasma.components 2.0
 
 RowLayout {
-
     property int clockSize
     
     KeyboardButton {}
     Battery {}
     Label {
         font.family: config.Font || "Noto Sans"
-        font.pointSize: clockSize
+        font.pointSize: clockSize 
         text: Qt.formatDateTime(timeSource.data["Local"]["DateTime"], " ddd dd MMMM,")
         renderType: Text.QtRendering
     }
@@ -45,6 +44,6 @@ RowLayout {
         id: timeSource
         engine: "time"
         connectedSources: ["Local"]
-        interval: 1000
+        interval: 500
     }
 }

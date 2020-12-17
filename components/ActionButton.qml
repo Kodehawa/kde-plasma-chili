@@ -32,9 +32,10 @@ Item {
     activeFocusOnTab: true
     opacity: ( containsMouse || activeFocus ) ? 1 : 0.6
     property int iconSize
-
-    implicitWidth: Math.max(icon.implicitWidth + units.largeSpacing * 3, label.contentWidth)
-    implicitHeight: Math.max(icon.implicitHeight + units.largeSpacing * 2, label.contentHeight)
+    
+    implicitWidth: Math.max(icon.implicitWidth + PlasmaCore.Units.largeSpacing * 3, label.contentWidth)
+    implicitHeight: Math.max(icon.implicitHeight + PlasmaCore.Units.largeSpacing * 2, label.contentHeight)
+    property int fontSize: config.FontPointSize ? config.FontPointSize : root.height / 75
 
     PlasmaCore.IconItem {
         id: icon
@@ -53,11 +54,11 @@ Item {
     PlasmaComponents.Label {
         id: label
         font.family: config.Font || "Noto Sans"
-        font.pointSize: config.FontPointSize || root.generalFontSize
+        font.pointSize: fontSize
         renderType: Text.QtRendering
         anchors {
             top: icon.bottom
-            topMargin: units.smallSpacing
+            topMargin: PlasmaCore.Units.smallSpacing
             left: parent.left
             right: parent.right
         }

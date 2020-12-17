@@ -34,9 +34,9 @@ PlasmaCore.ColorScope {
 
     width: config.ScreenWidth
     height: config.ScreenHeight
-
+    
     property string notificationMessage
-    property string generalFontColor: "white"
+    property string generalFontColor: config.FontColor ? config.FontColor : "white"
     property int generalFontSize: config.FontPointSize ? config.FontPointSize : root.height / 75
 
     LayoutMirroring.enabled: Qt.application.layoutDirection === Qt.RightToLeft
@@ -68,7 +68,7 @@ PlasmaCore.ColorScope {
         }
         anchors.rightMargin: 14
         anchors.topMargin: 10
-        clockSize: root.generalFontSize
+        clockSize: config.ClockSize
     }
 
 
@@ -78,20 +78,10 @@ PlasmaCore.ColorScope {
             left: parent.left
             right: parent.right
         }
+        
         height: root.height
 
         focus: true //StackView is an implicit focus scope, so we need to give this focus so the item inside will have it
-
-        Timer {
-            //SDDM has a bug in 0.13 where even though we set the focus on the right item within the window, the window doesn't have focus
-            //it is fixed in 6d5b36b28907b16280ff78995fef764bb0c573db which will be 0.14
-            //we need to call "window->activate()" *After* it's been shown. We can't control that in QML so we use a shoddy timer
-            //it's been this way for all Plasma 5.x without a huge problem
-            running: true
-            repeat: false
-            interval: 200
-            onTriggered: mainStack.forceActiveFocus()
-        }
 
         initialItem: Login {
             id: userListComponent
@@ -159,7 +149,7 @@ PlasmaCore.ColorScope {
 
         Behavior on opacity {
             OpacityAnimator {
-                duration: units.longDuration
+                duration: PlasmaCore.Units.longDuration
             }
         }
     }
@@ -226,18 +216,18 @@ PlasmaCore.ColorScope {
                         NumberAnimation {
                             target: mainStack
                             property: "y"
-                            duration: units.longDuration
+                            duration: PlasmaCore.Units.longDuration
                             easing.type: Easing.InOutQuad
                         }
                         NumberAnimation {
                             target: inputPanel
                             property: "y"
-                            duration: units.longDuration
+                            duration: PlasmaCore.Units.longDuration
                             easing.type: Easing.OutQuad
                         }
                         OpacityAnimator {
                             target: inputPanel
-                            duration: units.longDuration
+                            duration: PlasmaCore.Units.longDuration
                             easing.type: Easing.OutQuad
                         }
                     }
@@ -251,18 +241,18 @@ PlasmaCore.ColorScope {
                         NumberAnimation {
                             target: mainStack
                             property: "y"
-                            duration: units.longDuration
+                            duration: PlasmaCore.Units.longDuration
                             easing.type: Easing.InOutQuad
                         }
                         NumberAnimation {
                             target: inputPanel
                             property: "y"
-                            duration: units.longDuration
+                            duration: PlasmaCore.Units.longDuration
                             easing.type: Easing.InQuad
                         }
                         OpacityAnimator {
                             target: inputPanel
-                            duration: units.longDuration
+                            duration: PlasmaCore.Units.longDuration
                             easing.type: Easing.InQuad
                         }
                     }
@@ -315,7 +305,7 @@ PlasmaCore.ColorScope {
 
         Behavior on opacity {
             OpacityAnimator {
-                duration: units.longDuration
+                duration: PlasmaCore.Units.longDuration
             }
         }
 
@@ -328,17 +318,18 @@ PlasmaCore.ColorScope {
 
         SessionButton {
             id: sessionButton
-            sessionFontSize: root.generalFontSize
+            sessionFontSize: config.SessionFontSize
         }
 
     }
 
     Connections {
         target: sddm
-        onLoginFailed: {
+        function onLoginFailed() {
             notificationMessage = i18nd("plasma_lookandfeel_org.kde.lookandfeel", "Login Failed")
         }
-        onLoginSucceeded: {
+        
+        function onLoginSucceeded() {
             //note SDDM will kill the greeter at some random point after this
             //there is no certainty any transition will finish, it depends on the time it
             //takes to complete the init

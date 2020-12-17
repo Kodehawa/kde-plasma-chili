@@ -8,13 +8,18 @@ import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 2.0 as PlasmaComponents
 
 SessionManagementScreen {
-
     property bool showUsernamePrompt: !showUserList
     property int usernameFontSize
     property string usernameFontColor
     property string lastUserName
     property bool passwordFieldOutlined: config.PasswordFieldOutlined == "true"
     property bool hidePasswordRevealIcon: config.HidePasswordRevealIcon == "false"
+    property string customTextColor: config.TextColor
+    property string customRectangleColor: config.RectangleColor
+    property string customBorderColor: config.BorderColor
+    property string customBorderWidth: config.BorderWidth
+    property string customRadius: config.RectangleRadius
+    property string customMinimumHeight: config.RectangleHeight
 
     //the y position that should be ensured visible when the on screen keyboard is visible
     property int visibleBoundary: mapFromItem(loginButton, 0, 0).y
@@ -46,20 +51,20 @@ SessionManagementScreen {
     PlasmaComponents.TextField {
         id: userNameInput
         Layout.fillWidth: true
-        Layout.minimumHeight: 21
+        Layout.minimumHeight: customMinimumHeight
         implicitHeight: root.height / 28
         font.family: config.Font || "Noto Sans"
         font.pointSize: usernameFontSize
-        opacity: 0.5
+        opacity: 0.7
         text: lastUserName
         visible: showUsernamePrompt
         focus: showUsernamePrompt && !lastUserName //if there's a username prompt it gets focus first, otherwise password does
         placeholderText: i18nd("plasma_lookandfeel_org.kde.lookandfeel", "Username")
 
         style: TextFieldStyle {
-            textColor: "black"
+            textColor: customTextColor
             background: Rectangle {
-                radius: 3
+                radius: customRadius
             }
         }
     }
@@ -68,10 +73,10 @@ SessionManagementScreen {
         id: passwordBox
         
         Layout.fillWidth: true
-        Layout.minimumHeight: 21
+        Layout.minimumHeight: customMinimumHeight
         implicitHeight: usernameFontSize * 2.85
         font.pointSize: usernameFontSize * 0.8
-        opacity: passwordFieldOutlined ? 0.75 : 0.5
+        opacity: config.Opacity ? config.Opacity : (passwordFieldOutlined ? 0.5 : 0.75)
         font.family: config.Font || "Noto Sans"
         placeholderText: config.PasswordFieldPlaceholderText == "Password" ? i18nd("plasma_lookandfeel_org.kde.lookandfeel", "Password") : config.PasswordFieldPlaceholderText
         focus: !showUsernamePrompt || lastUserName
@@ -80,14 +85,14 @@ SessionManagementScreen {
         onAccepted: startLogin()
 
         style: TextFieldStyle {
-            textColor: passwordFieldOutlined ? "white" : "black"
-            placeholderTextColor: passwordFieldOutlined ? "white" : "black"
+            textColor: customTextColor
+            placeholderTextColor: customTextColor
             passwordCharacter: config.PasswordFieldCharacter == "" ? "●" : config.PasswordFieldCharacter
             background: Rectangle {
-                radius: 3
-                border.color: "white"
-                border.width: 1
-                color: passwordFieldOutlined ? "transparent" : "white"
+                color: customRectangleColor
+                radius: customRadius
+                border.color: customBorderColor
+                border.width: customBorderWidth
             }
         }
 
@@ -119,7 +124,7 @@ SessionManagementScreen {
 
         Connections {
             target: sddm
-            onLoginFailed: {
+            function onLoginFailed() {
                 passwordBox.selectAll()
                 passwordBox.forceActiveFocus()
             }
@@ -130,12 +135,13 @@ SessionManagementScreen {
         id: loginButton
         source: "components/artwork/login.svgz"
         smooth: true
-        sourceSize: Qt.size(passwordBox.height, passwordBox.height)
+        sourceSize: Qt.size(passwordBox.height, passwordBox.height)        
         anchors {
             left: passwordBox.right
             verticalCenter: passwordBox.verticalCenter
         }
-        anchors.leftMargin: 8
+        
+        anchors.leftMargin: 12
         visible: opacity > 0
         opacity: 0
         MouseArea {
