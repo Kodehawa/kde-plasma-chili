@@ -14,12 +14,12 @@ SessionManagementScreen {
     property string lastUserName
     property bool passwordFieldOutlined: config.PasswordFieldOutlined == "true"
     property bool hidePasswordRevealIcon: config.HidePasswordRevealIcon == "false"
-    property string customTextColor: config.TextColor
-    property string customRectangleColor: config.RectangleColor
-    property string customBorderColor: config.BorderColor
-    property string customBorderWidth: config.BorderWidth
-    property string customRadius: config.RectangleRadius
-    property string customMinimumHeight: config.RectangleHeight
+    property string customTextColor: config.TextColor ? config.TextColor : "black"
+    property string customRectangleColor: config.RectangleColor ? config.RectangleColor : "white"
+    property string customBorderColor: config.BorderColor ? config.BorderColor : "white"
+    property string customBorderWidth: config.BorderWidth ? config.BorderWidth : 1
+    property string customRadius: config.RectangleRadius ? config.RectangleRadius : 3
+    property string customMinimumHeight: config.RectangleHeight ? config.RectangleHeight : 21
 
     //the y position that should be ensured visible when the on screen keyboard is visible
     property int visibleBoundary: mapFromItem(loginButton, 0, 0).y
